@@ -1,13 +1,20 @@
 const express = require('express');
 const fs = require('fs');
+const cors = require('cors');
 const app = express();
+
+
+app.use(cors({
+  origin: 'https://analytics-logging-app.vercel.app'  
+}));
 
 
 app.use((req, res, next) => {
   const logMessage = `${new Date().toISOString()} - ${req.method} ${req.originalUrl}\n`;
-  fs.appendFileSync('access.log', logMessage);  
+  fs.appendFileSync('access.log', logMessage);
   next();
 });
+
 
 app.get('/api/access-logs', (req, res) => {
   fs.readFile('access.log', 'utf8', (err, data) => {
